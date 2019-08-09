@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.internal.util.reflection.FieldSetter;
 
 import java.util.List;
-import java.util.stream.Stream;
 
+import static com.example.kafka.MainApp.getCustomers;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -44,23 +44,6 @@ public class AvroProducerTest {
         assertThat(producerRecords.get(0).value().getEmail(), equalTo("customer1@mail.com"));
         assertThat(producerRecords.get(1).value().getId(), equalTo(2));
         assertThat(producerRecords.get(1).value().getEmail(), equalTo("customer2@mail.com"));
-    }
-
-    public Stream<Customer> getCustomers() {
-        Customer customer1 = Customer.newBuilder()
-                                    .setEmail("customer1@mail.com")
-                                    .setFirstName("Customer 1")
-                                    .setLastName("Test")
-                                    .setId(1)
-                                    .build();
-        Customer customer2 = Customer.newBuilder()
-                .setEmail("customer2@mail.com")
-                .setFirstName("Customer 2")
-                .setLastName("Test")
-                .setId(2)
-                .build();
-
-        return Stream.of(customer1, customer2);
     }
 
     private <Customer> Serializer<Customer> getAvroSerializer() {
