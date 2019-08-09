@@ -7,15 +7,11 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 import java.util.stream.Stream;
 
 public class AvroProducer {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AvroProducer.class);
 
     private ProducerProperties producerProperties;
     private Producer<String, Customer> producer;
@@ -31,7 +27,6 @@ public class AvroProducer {
                  new ProducerRecord<>(producerProperties.getTopic(), customer);
 
                 producer.send(record);
-                LOGGER.info("Sent record {}", record.toString());
         });
     }
 
@@ -44,7 +39,8 @@ public class AvroProducer {
         properties.put("key.serializer", StringSerializer.class);
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                 KafkaAvroSerializer.class);
-        properties.put(ProducerConfig.CLIENT_ID_CONFIG, "customer12");
+        properties.put(ProducerConfig.CLIENT_ID_CONFIG,
+                producerProperties.getClientId());
 
         return properties;
 
