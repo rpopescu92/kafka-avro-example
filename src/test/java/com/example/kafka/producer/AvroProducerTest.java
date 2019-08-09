@@ -3,7 +3,6 @@ package com.example.kafka.producer;
 import avro.Customer;
 import io.confluent.kafka.schemaregistry.client.MockSchemaRegistryClient;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
-import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 import org.apache.kafka.clients.producer.MockProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Serializer;
@@ -12,9 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.internal.util.reflection.FieldSetter;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -30,7 +27,7 @@ public class AvroProducerTest {
     @BeforeEach
     public void setup() throws NoSuchFieldException {
         mockSchemaRegistryClient = new MockSchemaRegistryClient();
-        mockProducer = new MockProducer<>(true, new StringSerializer(), getSerializer());
+        mockProducer = new MockProducer<>(true, new StringSerializer(), getAvroSerializer());
         ProducerProperties kafkaConfig = new ProducerProperties();
         avroProducer = new AvroProducer(kafkaConfig);
         FieldSetter.setField(avroProducer, avroProducer.getClass().getDeclaredField("producer"), mockProducer);
@@ -66,10 +63,9 @@ public class AvroProducerTest {
         return Stream.of(customer1, customer2);
     }
 
-    private <Customer> Serializer<Customer> getSerializer() {
-        Map<String, Object> map = new HashMap<>();
-        map.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8089");
-        Serializer<Customer> serializer = (Serializer) new KafkaAvroSerializer(mockSchemaRegistryClient);
+    private <Customer> Serializer<Customer> getAvroSerializer() {
+        Serializer<Customer> serializer =
+                (Serializer) new KafkaAvroSerializer(mockSchemaRegistryClient);
         return serializer;
     }
 
