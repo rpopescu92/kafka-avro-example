@@ -1,0 +1,10 @@
+{
+     "type": "record",
+     "name": "avro.Customer",
+     "fields":[
+         {  "name": "id", "type": "int"},
+         {  "name": "firstName",  "type": "string"},
+         {  "name": "lastName",  "type": "string"},
+         {  "name": "email", "type": ["string", "null"]}
+     ]
+}
